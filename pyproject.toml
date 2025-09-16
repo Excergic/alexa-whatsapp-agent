@@ -1,0 +1,15 @@
+[project]
+name = "alexa-whatsapp-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "google-genai>=1.37.0",
+    "langchain>=0.3.27",
+    "langchain-core>=0.3.76",
+    "langchain-groq>=0.3.8",
+    "langgraph>=0.6.7",
+    "pillow>=11.3.0",
+    "pydantic-settings>=2.10.1",
+]
