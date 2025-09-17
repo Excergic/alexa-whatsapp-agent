@@ -75,3 +75,17 @@ async def memory_extraction_node(state: AICompanionState):
     memory_manager = get_memory_manager()
     await memory_manager.extract_and_store_memories(state["messages"][-1])
     return {}
+
+async def memory_injection_node(state: AICompanionState):
+    """Retrieve and inject relevant memories into the character card."""
+    memory_manager = get_memory_manager()
+
+    # Get relevant memories based on recent conversation
+    recent_context = " ".join([m.content for m in state["messages"][-3:]])
+    memories = memory_manager.get_relevant_memories(recent_context)
+
+    # Format memories for the character card
+    memory_context = memory_manager.format_memories_for_prompt(memories)
+
+    return {"memory_context": memory_context}
+
