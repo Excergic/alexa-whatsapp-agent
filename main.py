@@ -1,9 +1,8 @@
-from datetime import datetime
+# What if content exists but is None/empty?
+class Message:
+    def __init__(self, content):
+        self.content = content
 
-current_datetime = datetime.now()
-print(current_datetime)
-current_time = current_datetime.time()
-current_day = current_datetime.weekday()
-
-print(current_time)
-print(current_day)
+messages = [Message(None), Message(""), Message("hello")]
+contents = [m.content for m in messages[-3:]]  # [None, "", "hello"]
+result = " ".join(contents)  # 💥 CRASHES! Can't join None

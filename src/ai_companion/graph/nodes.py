@@ -14,7 +14,7 @@ from ai_companion.modules.memory.long_term.memory_manager import get_memory_mana
 # because we need to inject the current activity into the character card to make alexa a real person
 def context_injection_node(state: AICompanionState):
     schedule_context = ScheduleContextGenerator.get_current_activity()
-    if schedule_context is not state.get("current_activity", ""):
+    if schedule_context != state.get("current_activity", ""): # != and is not are not the same
         apply_activity = True
     else:
         apply_activity = False

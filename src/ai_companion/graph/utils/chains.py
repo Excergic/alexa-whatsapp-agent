@@ -11,7 +11,7 @@ class RouterResponse(BaseModel):
 
 
 def get_router_chain():
-    model = get_chat_model(temperature=0.3).with_structured_output(RouterResponse)
+    model = get_chat_model(temperature=0.3).with_structured_output(RouterResponse)  
 
     prompt = ChatPromptTemplate.from_messages(
         [("system", ROUTER_PROMPT), MessagesPlaceholder(variable_name="messages")]
