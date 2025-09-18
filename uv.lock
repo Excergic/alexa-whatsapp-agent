@@ -11,6 +11,7 @@ name = "alexa-whatsapp-agent"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "elevenlabs" },
     { name = "google-genai" },
     { name = "langchain" },
     { name = "langchain-core" },
@@ -24,6 +25,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "elevenlabs", specifier = ">=2.15.0" },
     { name = "google-genai", specifier = ">=1.37.0" },
     { name = "langchain", specifier = ">=0.3.27" },
     { name = "langchain-core", specifier = ">=0.3.76" },
@@ -134,6 +136,23 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/fc/f8/98eea607f65de6527f8a2e8885fc8015d3e6f5775df186e443e0964a11c3/distro-1.9.0.tar.gz", hash = "sha256:2fa77c6fd8940f116ee1d6b94a2f90b13b5ea8d019b98bc8bafdcabcdd9bdbed", size = 60722, upload-time = "2023-12-24T09:54:32.31Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/12/b3/231ffd4ab1fc9d679809f356cebee130ac7daa00d6d6f3206dd4fd137e9e/distro-1.9.0-py3-none-any.whl", hash = "sha256:7bffd925d65168f85027d8da9af6bddab658135b840670a223589bc0c8ef02b2", size = 20277, upload-time = "2023-12-24T09:54:30.421Z" },
+]
+
+[[package]]
+name = "elevenlabs"
+version = "2.15.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "pydantic" },
+    { name = "pydantic-core" },
+    { name = "requests" },
+    { name = "typing-extensions" },
+    { name = "websockets" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/21/c8/b264e16ba64bd8c364f4bebb9e6059e5a0d00e6845b5072971013d96c067/elevenlabs-2.15.0.tar.gz", hash = "sha256:24de2fa9f90e691af31b6f2f52b5c08267ff65dc4c5dd4e23b4e43b84c483a2c", size = 348338, upload-time = "2025-09-08T06:52:46.086Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/cc/632a4b335edc8df13c64f884cf45ef48ba0295ef61aba40142717b1c694b/elevenlabs-2.15.0-py3-none-any.whl", hash = "sha256:38cdef32e8e51cd07e69da189d334652906f6ee91eb70c8744e1c88759cf665c", size = 941755, upload-time = "2025-09-08T06:52:44.514Z" },
 ]
 
 [[package]]

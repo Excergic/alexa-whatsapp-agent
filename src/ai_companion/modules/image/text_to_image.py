@@ -152,3 +152,30 @@ class TextToImage:
 
         except Exception as e:
             raise TextToImageError(f"Failed to enhance prompt: {str(e)}") from e
+
+    async def image_node(state: AICompanionState, config: RunnableConfig):
+        current_activity = ScheduleContextGenerator.get_current_activity()
+        memory_context = state.get("memory_context", "")
+
+        chain = get_character_response_chain(state.get("summary", ""))
+        text_to_image_module = get_text_to_image_module()
+
+        scenario = await text_to_image_module.create_scenario(state["messages"][-5:])
+        os.makedirs("generated_images", exist_ok=True)
+        img_path = f"generated_images/image_{str(uuid4())}.png"
+        await text_to_image_module.generate_image(scenario.image_prompt, img_path)
+
+        # Inject the image prompt information as an AI message
+        scenario_message = HumanMessage(content=f"<image attached by Ava generated from prompt: {scenario.image_prompt}>")
+        updated_messages = state["messages"] + [scenario_message]
+
+        response = await chain.ainvoke(
+            {
+                "messages": updated_messages,
+                "current_activity": current_activity,
+                "memory_context": memory_context,
+            },
+            config,
+        )
+
+        return {"messages": AIMessage(content=response), "image_path": img_path}
