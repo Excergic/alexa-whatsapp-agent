@@ -28,7 +28,7 @@ class ScheduleContextGenerator:
     }
 
     @staticmethod
-    def _parse_time_range(time_range: str) -> tuple(datetime.time, datetime.time):
+    def _parse_time_range(time_range: str) -> tuple[datetime.time, datetime.time]:
         """Parse a time range string (e.g., '06:00-07:00') into a start and end time."""
         start_str, end_str = time_range.split('-') # list -> [06:00, 07:00]
         start_time = datetime.strptime(start_str, '%H:%M').time()
