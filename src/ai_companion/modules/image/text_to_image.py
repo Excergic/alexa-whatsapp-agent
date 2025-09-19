@@ -2,6 +2,7 @@ import base64
 import logging
 import os
 from typing import Optional
+from io import BytesIO
 
 from ai_companion.core.exceptions import TextToImageError
 from ai_companion.core.prompts import IMAGE_ENHANCEMENT_PROMPT, IMAGE_SCENARIO_PROMPT
@@ -10,34 +11,29 @@ from langchain.prompts import PromptTemplate
 from langchain_groq import ChatGroq
 from pydantic import BaseModel, Field
 
+# ✅ Correct imports from Google docs
 from google import genai
 from google.genai import types
 from PIL import Image
 
 class ScenarioPrompt(BaseModel):
     """Class for the scenario response"""
-
     narrative: str = Field(..., description="The AI's narrative response to the question")
     image_prompt: str = Field(..., description="The visual prompt to generate an image representing the scene")
 
-
 class EnhancedPrompt(BaseModel):
     """Class for the text prompt"""
-
-    content: str = Field(
-        ...,
-        description="The enhanced text prompt to generate an image",
-    )
+    content: str = Field(..., description="The enhanced text prompt to generate an image")
 
 class TextToImage:
-    """A class to handle text-to-image generation using gemini-2.5-flash-image-preview."""
+    """A class to handle text-to-image generation using Google's Gemini image model."""
 
     REQUIRED_ENV_VARS = ["GROQ_API_KEY", "GEMINI_API_KEY"]
 
     def __init__(self):
         """Initialize the TextToImage class and validate environment variables."""
         self._validate_env_vars()
-        self._gemini_client: Optional[genai.Client] = None
+        self._client: Optional[genai.Client] = None
         self.logger = logging.getLogger(__name__)
 
     def _validate_env_vars(self) -> None:
@@ -47,41 +43,47 @@ class TextToImage:
             raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
 
     @property
-    def gemini_client(self) -> genai:
-        """Get or create Together client instance using singleton pattern."""
-        if self._gemini_client is None:
-            self._gemini_client = genai.Client(api_key=settings.GEMINI_API_KEY)
-        return self._gemini_client
+    def client(self) -> genai.Client:
+        """Get or create Google Genai client instance using singleton pattern."""
+        if self._client is None:
+            # ✅ Correct client initialization from Google docs
+            self._client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        return self._client
 
     async def generate_image(self, prompt: str, output_path: str = "") -> bytes:
-        """Generate an image from a prompt using gemini-2.5-flash-image-preview."""
+        """Generate an image using Google's Gemini image model."""
         if not prompt.strip():
             raise ValueError("Prompt cannot be empty")
 
         try:
             self.logger.info(f"Generating image for prompt: '{prompt}'")
 
-            response = self.gemini_client.models.generate_content(
-                model=settings.TTI_MODEL_NAME,
-                content=[prompt], # simple list format
+            # ✅ Use exact structure from Google docs
+            response = self.client.models.generate_content(
+                model="gemini-2.5-flash-image-preview",  # ✅ Correct model name
+                contents=[prompt],  # ✅ Correct format
             )
 
-            image_parts = [
-                part.inline_data.data
-                for part in response.candidates.content.parts
-                if part.inline_data
-            ]
+            # ✅ Parse response exactly like Google docs
+            image_data = None
+            for part in response.candidates[0].content.parts:
+                if part.text is not None:
+                    self.logger.info(f"Text response: {part.text}")
+                elif part.inline_data is not None:
+                    # ✅ Extract image data exactly like docs
+                    image_data = part.inline_data.data
+                    break
 
-            if not image_parts:
-                raise TextToImageError("No image generated in response")
+            if image_data is None:
+                raise TextToImageError("No image data found in response")
 
-            image_data = image_parts
-
-            # save image if output path provided
+            # Save image if output path provided
             if output_path:
-                os.makedirs(os.path.dirname(output_path), exist_ok=True) 
-                with open(output_path, "wb") as f:
-                    f.writes(image_data)
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                
+                # ✅ Use PIL to save like in docs
+                image = Image.open(BytesIO(image_data))
+                image.save(output_path)
                 self.logger.info(f"Image saved to {output_path}")
 
             return image_data
@@ -89,7 +91,7 @@ class TextToImage:
         except Exception as e:
             raise TextToImageError(f"Failed to generate image: {str(e)}") from e
 
-
+    # Keep your existing methods unchanged
     async def create_scenario(self, chat_history: list = None) -> ScenarioPrompt:
         """Creates a first-person narrative scenario and corresponding image prompt based on chat history."""
         try:
@@ -122,7 +124,6 @@ class TextToImage:
         except Exception as e:
             raise TextToImageError(f"Failed to create scenario: {str(e)}") from e
 
-
     async def enhance_prompt(self, prompt: str) -> str:
         """Enhance a simple prompt with additional details and context."""
         try:
@@ -152,5 +153,3 @@ class TextToImage:
 
         except Exception as e:
             raise TextToImageError(f"Failed to enhance prompt: {str(e)}") from e
-
-    

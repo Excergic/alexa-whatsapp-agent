@@ -9,6 +9,7 @@ dependencies = [
     "elevenlabs>=2.15.0",
     "fastapi>=0.116.2",
     "google-genai>=1.37.0",
+    "google-generativeai>=0.8.5",
     "langchain>=0.3.27",
     "langchain-core>=0.3.76",
     "langchain-groq>=0.3.8",

@@ -3,8 +3,7 @@ from langchain_core.runnables import RunnableConfig
 import os
 from uuid import uuid4
 
-
-from ai_companion import settings
+from ai_companion.settings import settings
 
 from ai_companion.graph.state import AICompanionState
 from ai_companion.graph.utils.chains import get_character_response_chain, get_router_chain
